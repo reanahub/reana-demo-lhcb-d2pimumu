@@ -13,12 +13,15 @@ workflow:
   type: serial
   specification:
     steps:
-      - environment: 'docker.io/reanahub/reana-env-root6'
+      - environment: "docker.io/reanahub/reana-env-root6"
         commands:
-        - mkdir -p results/tmp && mkdir -p logs
-        - root -b -q 'Optimise.C("${data}", "results")' | tee logs/optimise.log
-        - root -b -q 'ModelFixing.C("${data}", "results/tmp/PhiModels.root")' | tee logs/model_fixing.log
-        - root -b -q 'OSMassFit.C("${data}", "results/tmp/PhiModels.root", "results")'  | tee logs/massfit.log
+          - mkdir -p results/tmp && mkdir -p logs
+          - root -b -q 'Optimise.C("${data}", "results")' | tee
+            logs/optimise.log
+          - root -b -q 'ModelFixing.C("${data}", "results/tmp/PhiModels.root")'
+            | tee logs/model_fixing.log
+          - root -b -q 'OSMassFit.C("${data}", "results/tmp/PhiModels.root",
+            "results")'  | tee logs/massfit.log
 outputs:
   files:
     - results/2D_Optimisation_Pi.pdf

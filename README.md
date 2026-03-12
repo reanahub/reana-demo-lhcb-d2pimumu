@@ -7,8 +7,7 @@
 
 This analysis example attempts to reproduce
 [LHCb rare charm decay study](https://cds.cern.ch/record/1543929) published in
-[Phys. Lett. B 724 (2013)
-203-212](https://www.sciencedirect.com/science/article/pii/S0370269313004747?via%3Dihub).
+[Phys. Lett. B 724 (2013) 203-212](https://www.sciencedirect.com/science/article/pii/S0370269313004747?via%3Dihub).
 
 ![image](https://raw.githubusercontent.com/reanahub/reana-demo-lhcb-d2pimumu/master/docs/decay.png)
 
@@ -55,7 +54,7 @@ Headers and Plot style:
 - [lhcbStyle.C](lhcbStyle.C) - Plot formats specific to the LHCb collaboration.
 
 - [RooFitHeaders.h](RooFitHeaders.h) - Libraries and packages needed to perform
-the fitting.
+  the fitting.
 
 #### Step 1: Optimisation stage [Optimise.C](Optimise.C)
 
@@ -170,12 +169,16 @@ The result of this analysis are the following plots in various dimuon mass
 ranges. We studied the three body decay in high dimuon and low dimuon mass
 range, and we did not observe any signal.
 
-| Dimuon resonances | Dimuon mass range (MeV) | Plot | |
------------------------------ | ----------------------- |
------------------------- | | Three body decay (low dimuon) | 250 - 525 |
-`low_dimuon_signal.pdf` | | $\eta$ | 525 - 565 | `eta.pdf` | | $\rho , \omega$ |
-565 - 850 | `rho_omega.pdf` | | $\phi$ | 850 - 1250 | `phi.pdf` | | Three body
-(high dimuon) | 1250 - 2000 | `high_dimuon_signal.pdf` |
+<!-- markdownlint-disable MD013 -->
+
+| Dimuon resonances        | Dimuon mass range (MeV) | Plot                          |           |
+| ------------------------ | ----------------------- | ----------------------------- | --------- | ---------- | --------- | --------------- | ---------- |
+| ------------------------ |                         | Three body decay (low dimuon) | 250 - 525 |
+| `low_dimuon_signal.pdf`  |                         | $\eta$                        | 525 - 565 | `eta.pdf`  |           | $\rho , \omega$ |
+| 565 - 850                | `rho_omega.pdf`         |                               | $\phi$    | 850 - 1250 | `phi.pdf` |                 | Three body |
+| (high dimuon)            | 1250 - 2000             | `high_dimuon_signal.pdf`      |
+
+<!-- markdownlint-enable MD013 -->
 
 The plots can be found in the `mass_fits` folder at the end of the execution.
 
@@ -213,12 +216,15 @@ workflow:
   type: serial
   specification:
     steps:
-      - environment: 'docker.io/reanahub/reana-env-root6'
+      - environment: "docker.io/reanahub/reana-env-root6"
         commands:
-        - mkdir -p results/tmp && mkdir -p logs
-        - root -b -q 'Optimise.C("${data}", "results")' | tee logs/optimise.log
-        - root -b -q 'ModelFixing.C("${data}", "results/tmp/PhiModels.root")' | tee logs/model_fixing.log
-        - root -b -q 'OSMassFit.C("${data}", "results/tmp/PhiModels.root", "results")'  | tee logs/massfit.log
+          - mkdir -p results/tmp && mkdir -p logs
+          - root -b -q 'Optimise.C("${data}", "results")' | tee
+            logs/optimise.log
+          - root -b -q 'ModelFixing.C("${data}", "results/tmp/PhiModels.root")'
+            | tee logs/model_fixing.log
+          - root -b -q 'OSMassFit.C("${data}", "results/tmp/PhiModels.root",
+            "results")'  | tee logs/massfit.log
 outputs:
   files:
     - results/2D_Optimisation_Pi.pdf

@@ -17,67 +17,69 @@ stages:
   - name: optimisation
     dependencies: [init]
     scheduler:
-      scheduler_type: 'singlestep-stage'
+      scheduler_type: "singlestep-stage"
       parameters:
-        optimise: {stages: init, output: optimise, unwrap: true}
-        data: {stages: init, output: data, unwrap: true}
-        outfilepath: '{workdir}'
-        out_plot_2d_optimisation: '{workdir}/2D_Optimisation_Pi.pdf'
-        out_plot_mumumass: '{workdir}/MuMuMass_Pi.pdf'
+        optimise: { stages: init, output: optimise, unwrap: true }
+        data: { stages: init, output: data, unwrap: true }
+        outfilepath: "{workdir}"
+        out_plot_2d_optimisation: "{workdir}/2D_Optimisation_Pi.pdf"
+        out_plot_mumumass: "{workdir}/MuMuMass_Pi.pdf"
       step:
         process:
-          process_type: 'interpolated-script-cmd'
+          process_type: "interpolated-script-cmd"
           script: root -b -q '{optimise}("{data}", "{outfilepath}")'
         publisher:
-          publisher_type: 'frompar-pub'
+          publisher_type: "frompar-pub"
           outputmap:
             plot_2d_optimisation: out_plot_2d_optimisation
             plot_mumumass: out_plot_mumumass
         environment:
-          environment_type: 'docker-encapsulated'
-          image: 'docker.io/reanahub/reana-env-root6'
+          environment_type: "docker-encapsulated"
+          image: "docker.io/reanahub/reana-env-root6"
 
   - name: theoreticalmodelfixing
     dependencies: [optimisation]
     scheduler:
-      scheduler_type: 'singlestep-stage'
+      scheduler_type: "singlestep-stage"
       parameters:
-        modelfixing: {stages: init, output: modelfixing, unwrap: true}
-        data: {stages: init, output: data, unwrap: true}
-        outfilename: '{workdir}/PhiModels.root'
+        modelfixing: { stages: init, output: modelfixing, unwrap: true }
+        data: { stages: init, output: data, unwrap: true }
+        outfilename: "{workdir}/PhiModels.root"
       step:
         process:
-          process_type: 'interpolated-script-cmd'
+          process_type: "interpolated-script-cmd"
           script: root -b -q '{modelfixing}("{data}", "{outfilename}")'
         publisher:
-          publisher_type: 'frompar-pub'
+          publisher_type: "frompar-pub"
           outputmap:
             phimodels: outfilename
         environment:
-          environment_type: 'docker-encapsulated'
-          image: 'docker.io/reanahub/reana-env-root6'
+          environment_type: "docker-encapsulated"
+          image: "docker.io/reanahub/reana-env-root6"
 
   - name: massfitting
     dependencies: [theoreticalmodelfixing]
     scheduler:
-      scheduler_type: 'singlestep-stage'
+      scheduler_type: "singlestep-stage"
       parameters:
-        massfit: {stages: init, output: massfit, unwrap: true}
-        data: {stages: init, output: data, unwrap: true}
-        phimodels: {stages: theoreticalmodelfixing, output: phimodels, unwrap: true}
-        outfilepath: '{workdir}'
-        out_plot_low_dimuon_signal: '{workdir}/low_dimuon_signal.pdf'
-        out_plot_high_dimuon_signal: '{workdir}/high_dimuon_signal.pdf'
-        out_plot_eta: '{workdir}/eta.pdf'
-        out_plot_rho_omega: '{workdir}/rho_omega.pdf'
-        out_plot_phi: '{workdir}/phi.pdf'
+        massfit: { stages: init, output: massfit, unwrap: true }
+        data: { stages: init, output: data, unwrap: true }
+        phimodels:
+          { stages: theoreticalmodelfixing, output: phimodels, unwrap: true }
+        outfilepath: "{workdir}"
+        out_plot_low_dimuon_signal: "{workdir}/low_dimuon_signal.pdf"
+        out_plot_high_dimuon_signal: "{workdir}/high_dimuon_signal.pdf"
+        out_plot_eta: "{workdir}/eta.pdf"
+        out_plot_rho_omega: "{workdir}/rho_omega.pdf"
+        out_plot_phi: "{workdir}/phi.pdf"
 
       step:
         process:
-          process_type: 'interpolated-script-cmd'
-          script: root -b -q '{massfit}("{data}", "{phimodels}", "{outfilepath}")'
+          process_type: "interpolated-script-cmd"
+          script:
+            root -b -q '{massfit}("{data}", "{phimodels}", "{outfilepath}")'
         publisher:
-          publisher_type: 'frompar-pub'
+          publisher_type: "frompar-pub"
           outputmap:
             plot_low_dimuon_signal: out_plot_low_dimuon_signal
             plot_high_dimuon_signal: out_plot_high_dimuon_signal
@@ -85,5 +87,5 @@ stages:
             plot_rho_omega: out_plot_rho_omega
             plot_phi: out_plot_phi
         environment:
-          environment_type: 'docker-encapsulated'
-          image: 'docker.io/reanahub/reana-env-root6'
+          environment_type: "docker-encapsulated"
+          image: "docker.io/reanahub/reana-env-root6"
